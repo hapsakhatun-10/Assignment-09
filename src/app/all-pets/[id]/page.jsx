@@ -4,8 +4,7 @@ import PetInfoGrid from "@/app/components/PetInfo";
 import RequestPetFrom from "@/app/components/ReqPetFrom";
 
 const PetDetailsPage = async ({ params }) => {
-    const { id } = await params; // ✅ IMPORTANT FIX
-
+    const { id } = await params;
     const res = await fetch(`http://localhost:8000/pets/${id}`, {
         cache: "no-store",
     });

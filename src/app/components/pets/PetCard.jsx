@@ -57,10 +57,11 @@ const PetCard = ({ pets }) => {
                                     ${pet.adoptionFee}
                                 </span>
 
-                                <Link href={`/all-pets/${pet._id}`}>
-                                    <button className="bg-purple-700 text-white px-4 py-2 rounded-xl">
-                                        View Details
-                                    </button>
+                                <Link
+                                    href={`/all-pets/${pet._id}`}
+                                    className="bg-purple-700 text-white px-4 py-2 rounded-xl inline-block"
+                                >
+                                    View Details
                                 </Link>
                             </div>
                         </div>
