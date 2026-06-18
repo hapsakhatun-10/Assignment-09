@@ -57,15 +57,15 @@ export default function Navbar() {
                     ) : (
                         <>
                             <Link
-                                href="/login"
-                                className="px-4 py-1 rounded-full hover:bg-purple-50 transition text-gray-700"
+                                href="/Login"
+                                className="px-4 py-1 rounded-full hover:bg-purple-700 transition text-gray-700"
                             >
                                 Login
                             </Link>
 
                             <Link
                                 href="/signup"
-                                className="px-4 py-1 rounded-full bg-purple-600 text-white hover:bg-purple-700 transition"
+                                className="px-4 py-1 rounded-full  text-gray-700 hover:bg-purple-700 transition"
                             >
                                 Sign Up
                             </Link>

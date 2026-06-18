@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Avatar, Button } from "@heroui/react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
 
 const ProfileDropdown = ({ user }) => {
     const [open, setOpen] = useState(false);
