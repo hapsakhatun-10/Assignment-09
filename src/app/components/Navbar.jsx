@@ -4,10 +4,21 @@ import Link from "next/link";
 import { FaPaw } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
 import ProfileDropdown from "./ProfileDropdown";
-
+import { useRouter } from "next/navigation";
 export default function Navbar() {
+    const router = useRouter()
     const { data: session } = authClient.useSession();
     const user = session?.user;
+
+    const handleAllPets = (e) => {
+        e.preventDefault();
+
+        if (!user) {
+            router.push("/signup");
+        } else {
+            router.push("/all-pets");
+        }
+    };
 
     return (
         <nav className="sticky top-0 z-50 bg-white shadow-md">
@@ -31,7 +42,11 @@ export default function Navbar() {
                         Home
                     </Link>
 
-                    <Link href="/all-pets" className="hover:text-purple-600 transition">
+                    <Link
+                        href="/all-pets"
+                        onClick={handleAllPets}
+                        className="hover:text-purple-600 transition"
+                    >
                         All Pets
                     </Link>
 

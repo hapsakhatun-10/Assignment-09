@@ -4,27 +4,36 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import CancelButton from "../components/CancelBtn";
 import { FiClock, FiMapPin, FiMessageSquare } from "react-icons/fi";
+import { authClient } from "@/lib/auth-client";
 
 export default function MyRequestsPage() {
+    const { data: session } = authClient.useSession();
+
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchRequests = async () => {
             try {
-                const res = await fetch("http://localhost:8000/adoption-requests");
-                const data = await res.json();
+                if (!session?.user?.email) return;
 
-                setRequests(data);
+                const res = await fetch(
+                    `http://localhost:8000/adoption-requests?email=${session.user.email}`
+                );
+
+                const data = await res.json();
+                setRequests(data || []);
             } catch (error) {
-                console.log("Fetch error:", error);
+                console.log(error);
             } finally {
                 setLoading(false);
             }
+
+            console.log(session?.user?.email);
         };
 
         fetchRequests();
-    }, []);
+    }, [session]);
 
     if (loading) {
         return (
@@ -33,6 +42,8 @@ export default function MyRequestsPage() {
             </div>
         );
     }
+
+
 
     return (
         <div className="mx-auto px-6 py-10">
@@ -95,7 +106,9 @@ export default function MyRequestsPage() {
                                             <span>
                                                 Requested:{" "}
                                                 <span className="font-medium text-gray-800">
-                                                    {new Date(request.requestedAt).toLocaleString()}
+                                                    {request.requestedAt
+                                                        ? new Date(request.requestedAt).toLocaleString()
+                                                        : "N/A"}
                                                 </span>
                                             </span>
                                         </div>
@@ -133,7 +146,5 @@ export default function MyRequestsPage() {
                 )}
             </div>
         </div>
-    );
+    )
 }
-
-

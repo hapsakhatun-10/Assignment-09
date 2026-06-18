@@ -8,6 +8,8 @@ import { authClient } from "@/lib/auth-client";
 import { Icon } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 export default function SignUpPage() {
+
+
     const router = useRouter();
 
     const onSubmit = async (e) => {
@@ -37,7 +39,20 @@ export default function SignUpPage() {
         }
 
 
-    };
+
+
+
+    }
+
+
+    const handleGoogleSignin = async () => {
+        await authClient.signIn.social({
+            provider: "google"
+        })
+
+    }
+
+
 
     return (
         <div className="min-h-screen bg-purple-200 flex items-center justify-center px-4 py-10">
@@ -119,8 +134,9 @@ export default function SignUpPage() {
                     </div>
 
                     {/* Google Button */}
-                    <Button className="w-full" variant="tertiary">
-                        <FcGoogle className="text-xl" />                        Sign in with Google
+                    <Button onClick={handleGoogleSignin}
+                        className="w-full" variant="tertiary">
+                        <FcGoogle className="text-xl" /> Sign in with Google
                     </Button>
 
                     {/* Sign In */}

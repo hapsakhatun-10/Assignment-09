@@ -13,6 +13,7 @@ import AddPetPage from "../add-pets/page";
 import MyRequestsPage from "../my-requests/page";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
+import { reddit } from "better-auth";
 
 export default function DashboardPage() {
     const [activePage, setActivePage] = useState("home");
@@ -23,6 +24,7 @@ export default function DashboardPage() {
 
     const handleLogout = async () => {
         await authClient.signOut();
+        router.push("/");
     };
 
     const tips = [
@@ -91,7 +93,8 @@ export default function DashboardPage() {
                     <hr className="my-4 border-purple-100" />
 
                     {/* Logout Button */}
-                    <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors mt-auto">
+                    <button onClick={handleLogout}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors mt-auto">
                         <LogOut size={18} />
                         Logout
                     </button>
