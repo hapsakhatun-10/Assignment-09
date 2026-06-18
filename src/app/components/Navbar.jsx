@@ -10,15 +10,8 @@ export default function Navbar() {
     const { data: session } = authClient.useSession();
     const user = session?.user;
 
-    const handleAllPets = (e) => {
-        e.preventDefault();
+    console.log(session)
 
-        if (!user) {
-            router.push("/signup");
-        } else {
-            router.push("/all-pets");
-        }
-    };
 
     return (
         <nav className="sticky top-0 z-50 bg-white shadow-md">
@@ -44,7 +37,7 @@ export default function Navbar() {
 
                     <Link
                         href="/all-pets"
-                        onClick={handleAllPets}
+
                         className="hover:text-purple-600 transition"
                     >
                         All Pets

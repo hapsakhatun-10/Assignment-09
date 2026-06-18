@@ -7,13 +7,14 @@ import {
     PawPrint,
     LogOut,
     TrendingUp,
-    CheckCircle2
+    CheckCircle2,
+    PlusSquareIcon
 } from "lucide-react";
 import AddPetPage from "../add-pets/page";
 import MyRequestsPage from "../my-requests/page";
-import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
-import { reddit } from "better-auth";
+import Image from "next/image";
+import MyListingPage from "../my-listing/page";
 
 export default function DashboardPage() {
     const [activePage, setActivePage] = useState("home");
@@ -21,31 +22,28 @@ export default function DashboardPage() {
     const { data: session } = authClient.useSession();
     const userData = session?.user;
 
-
     const handleLogout = async () => {
         await authClient.signOut();
         router.push("/");
     };
 
-    const tips = [
-        "Use high-quality photos of your pet",
-        "Write a detailed and honest description",
-        "Set a fair and reasonable adoption fee",
-        "Keep your listings up to date"
-    ];
+
 
     return (
-        <div className="flex min-h-screen bg-purple-50 p-6 font-sans antialiased text-gray-800">
+        <div className="flex min-h-screen bg-purple-50 p-6 text-gray-800">
 
             <aside className="w-72 bg-white rounded-2xl shadow-sm border border-purple-100 flex flex-col overflow-hidden h-fit">
                 {/* User Mini Profile Header */}
                 <div className="bg-gradient-to-r from-purple-600 to-purple-700 p-5 flex items-center gap-3">
-                    <Image
-                        src={userData?.image || "/default-avatar.png"}
-                        alt="avatar"
-                        width={64}
-                        height={64}
-                    />
+                    <div className="w-16 h-16 rounded-full overflow-hidden">
+                        <Image
+                            src={userData?.image || "/default-avatar.png"}
+                            alt="avatar"
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
                     <div>
                         <h3 className="text-white font-semibold text-sm leading-tight">{userData?.name}</h3>
                         <p className="text-purple-100 text-xs truncate max-w-[160px]">{userData?.email}</p>
@@ -79,6 +77,19 @@ export default function DashboardPage() {
                         Add Pet
                     </button>
 
+
+
+                    <button
+                        onClick={() => setActivePage("my-listings")}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${activePage === "my-listings"
+                            ? "bg-purple-600 text-white shadow-sm"
+                            : "text-gray-600 hover:bg-purple-50"
+                            }`}
+                    >
+                        <PlusSquareIcon size={18} />
+                        My Listings
+                    </button>
+
                     <button
                         onClick={() => setActivePage("requests")}
                         className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${activePage === "requests"
@@ -89,6 +100,8 @@ export default function DashboardPage() {
                         <PawPrint size={18} />
                         My Requests
                     </button>
+
+
 
                     <hr className="my-4 border-purple-100" />
 
@@ -101,79 +114,99 @@ export default function DashboardPage() {
                 </nav>
             </aside>
 
+
+
+
+            {/* MAIN */}
             <main className="flex-1 ml-6 bg-white rounded-2xl shadow-sm border border-purple-100 p-8">
 
                 {activePage === "home" && (
                     <>
-                        {/* Welcome Banner Card */}
-                        <div className="bg-purple-700 rounded-2xl p-6 text-white flex items-center justify-between shadow-sm relative overflow-hidden">
-                            <div className="flex items-center gap-4 z-10">
-                                <Image
-                                    src={userData?.image || "/default-avatar.png"}
-                                    alt="avatar"
-                                    width={64}
-                                    height={64}
-                                />
-                                <div>
-                                    <p className="text-purple-100 text-xs">Welcome back,</p>
-                                    <h2 className="text-2xl font-bold tracking-tight">{userData?.name}</h2>
-                                    <p className="text-purple-100 text-xs mt-0.5">{userData?.email}</p>
-                                </div>
+                        {/* HEADER */}
+                        <div className="mb-6 flex items-center justify-between">
+                            {/* LEFT SIDE TEXT */}
+                            <div>
+                                <h1 className="text-2xl font-bold text-purple-700">
+                                    Dashboard Overview
+                                </h1>
+                                <p className="text-gray-500 text-sm">
+                                    Manage your pets and adoption requests
+                                </p>
                             </div>
 
+                            {/* RIGHT SIDE COUNTS */}
+                            <div className="flex items-center gap-4">
 
-                            <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full pointer-events-none" />
-                            <div className="absolute right-20 -top-10 w-24 h-24 bg-white/5 rounded-full pointer-events-none" />
+                                <div className="bg-purple-50 border border-purple-100 px-4 py-2 rounded-xl text-center">
+                                    <p className="text-xs text-gray-500">Total</p>
+                                    <p className="text-lg font-bold text-purple-700">12</p>
+                                </div>
+
+                                <div className="bg-green-50 border border-green-100 px-4 py-2 rounded-xl text-center">
+                                    <p className="text-xs text-gray-500">Available</p>
+                                    <p className="text-lg font-bold text-green-600">8</p>
+                                </div>
+
+                                <div className="bg-yellow-50 border border-yellow-100 px-4 py-2 rounded-xl text-center">
+                                    <p className="text-xs text-gray-500">Pending</p>
+                                    <p className="text-lg font-bold text-yellow-600">4</p>
+                                </div>
+
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-2 mt-8 mb-4 text-gray-900 font-bold text-sm tracking-wide uppercase">
+
+                        {/* QUICK ACTIONS */}
+                        <div className="flex items-center gap-2 mb-4 font-bold text-sm text-gray-800">
                             <TrendingUp size={16} className="text-purple-600" />
                             Quick Actions
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-3 gap-4">
+
                             <div
                                 onClick={() => setActivePage("add-pets")}
-                                className="bg-purple-50/60 rounded-xl p-5 border border-transparent hover:border-purple-200 transition-all cursor-pointer relative group flex flex-col justify-between min-h-35"
+                                className="bg-purple-50 rounded-xl p-5 cursor-pointer hover:border-purple-300 border border-transparent"
                             >
-                                <div className="flex justify-between items-start">
-                                    <div className="text-purple-600 bg-white p-2.5 rounded-xl shadow-sm border border-purple-100 group-hover:scale-105 transition-transform">
-                                        <PlusSquare size={24} />
-                                    </div>
-                                </div>
-                                <div className="mt-4">
-                                    <h4 className="text-gray-900 font-bold text-sm">Add Pet</h4>
-                                    <p className="text-gray-500 text-xs mt-0.5">List a new pet for adoption</p>
-                                </div>
+                                <PlusSquare className="text-purple-600 mb-3" />
+                                <h4 className="font-semibold">Add Pet</h4>
+                                <p className="text-xs text-gray-500">List a new pet</p>
                             </div>
 
-                            {/* Requests Shortcut */}
+                            <div
+                                onClick={() => setActivePage("my-listings")}
+                                className="bg-purple-50 rounded-xl p-5 cursor-pointer hover:border-purple-300 border border-transparent"
+                            >
+                                <PawPrint className="text-purple-600 mb-3" />
+                                <h4 className="font-semibold">My Listings</h4>
+                                <p className="text-xs text-gray-500">Manage your pet listings</p>
+                            </div>
                             <div
                                 onClick={() => setActivePage("requests")}
-                                className="bg-purple-50/60 rounded-xl p-5 border border-transparent hover:border-purple-200 transition-all cursor-pointer relative group flex flex-col justify-between min-h-[140px]"
+                                className="bg-purple-50 rounded-xl p-5 cursor-pointer hover:border-purple-300 border border-transparent"
                             >
-                                <div className="flex justify-between items-start">
-                                    <div className="text-purple-600 bg-white p-2.5 rounded-xl shadow-sm border border-purple-100 group-hover:scale-105 transition-transform">
-                                        <PawPrint size={24} />
-                                    </div>
-                                </div>
-                                <div className="mt-4">
-                                    <h4 className="text-gray-900 font-bold text-sm">My Requests</h4>
-                                    <p className="text-gray-500 text-xs mt-0.5">Track your adoption requests</p>
-                                </div>
+                                <PawPrint className="text-purple-600 mb-3" />
+                                <h4 className="font-semibold">My Requests</h4>
+                                <p className="text-xs text-gray-500">Track requests</p>
                             </div>
+
                         </div>
 
-                        {/* Tips Section */}
-                        <div className="mt-8 bg-purple-50/40 rounded-xl p-6 border border-purple-100/50">
-                            <div className="flex items-center gap-2 text-purple-700 font-bold text-sm mb-4">
-                                <PawPrint size={16} className="fill-purple-700" />
+                        {/* TIPS */}
+                        <div className="mt-8 bg-purple-50 rounded-xl p-6 border border-purple-100">
+                            <h3 className="text-sm font-bold text-purple-700 mb-3">
                                 Tips for Better Listings
-                            </div>
-                            <div className="grid grid-cols-2 gap-x-8 gap-y-3">
-                                {tips.map((tip, idx) => (
-                                    <div key={idx} className="flex items-center gap-2.5 text-xs text-gray-700 font-medium">
-                                        <CheckCircle2 size={14} className="text-purple-600 shrink-0" />
+                            </h3>
+
+                            <div className="grid grid-cols-2 gap-3 text-xs text-gray-600">
+                                {[
+                                    "Use high-quality photos",
+                                    "Write detailed description",
+                                    "Set fair adoption fee",
+                                    "Keep listings updated"
+                                ].map((tip, i) => (
+                                    <div key={i} className="flex items-center gap-2">
+                                        <CheckCircle2 size={14} className="text-purple-600" />
                                         {tip}
                                     </div>
                                 ))}
@@ -182,10 +215,10 @@ export default function DashboardPage() {
                     </>
                 )}
 
-                {/* 2. SUBPAGES / ROUTED VIEWS */}
+                {activePage === "add-pets" && <AddPetPage />}
+                {activePage === "my-listings" && <MyListingPage />}
                 {activePage === "requests" && <MyRequestsPage />}
 
-                {activePage === "add-pets" && <AddPetPage />}
 
             </main>
         </div>

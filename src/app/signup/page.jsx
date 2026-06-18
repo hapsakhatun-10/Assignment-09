@@ -18,28 +18,22 @@ export default function SignUpPage() {
         const formData = new FormData(e.currentTarget);
         const user = Object.fromEntries(formData.entries());
 
-        if (user.password.length < 8) {
-            alert("Password must be at least 8 characters");
-            return;
-        }
 
-        if (user.password !== user.confirmPassword) {
-            alert("Passwords do not match");
-            return;
-        }
 
         const { data, error } = await authClient.signUp.email({
             email: user.email,
             password: user.password,
             name: user.name,
+            image: user.image,
         });
 
         if (data) {
             router.push("/");
         }
-
-
-
+        else {
+            toast.error("Failed to add pet!");
+        }
+        console.log(user)
 
 
     }
@@ -89,6 +83,14 @@ export default function SignUpPage() {
                             className="w-full"
                         />
 
+                        <Input
+                            name="image"
+                            type="url"
+                            label="Image URL"
+                            placeholder="https://example.com/pet.jpg"
+                            variant="bordered"
+                            className="w-full"
+                        />
                         <Input
                             name="email"
                             type="email"

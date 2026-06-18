@@ -22,8 +22,8 @@ const ProfileDropdown = ({ user }) => {
                 className="flex items-center gap-3 cursor-pointer"
             >
                 <Avatar
-                    src={user?.image}
-                    name={user?.name}
+                    src={user?.image || undefined}
+                    name={user?.name || "User"}
                 />
 
                 <div className="leading-tight">

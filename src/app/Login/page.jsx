@@ -7,6 +7,8 @@ import { FcGoogle } from "react-icons/fc";
 import { FaPaw } from "react-icons/fa";
 
 const LoginPage = () => {
+
+
     const router = useRouter();
 
     const onSubmit = async (e) => {
@@ -15,19 +17,35 @@ const LoginPage = () => {
         const formData = new FormData(e.currentTarget);
         const user = Object.fromEntries(formData.entries());
 
+
+
         const { data, error } = await authClient.signIn.email({
             email: user.email,
             password: user.password,
+
         });
 
         if (data) {
             router.push("/");
         }
-
-        if (error) {
-            alert(error.message || "Login failed");
+        else {
+            toast.error("Failed to add pet!");
         }
-    };
+        console.log(user)
+
+
+    }
+
+
+    const handleGoogleSignin = async () => {
+        await authClient.signIn.social({
+            provider: "google"
+        })
+
+    }
+
+
+
 
 
     return (
@@ -81,7 +99,8 @@ const LoginPage = () => {
                 </div>
 
                 {/* Google */}
-                <Button className="w-full" variant="tertiary">
+                <Button onClick={handleGoogleSignin}
+                    className="w-full" variant="tertiary">
                     <FcGoogle className="text-xl" /> Sign in with Google
                 </Button>
 

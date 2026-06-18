@@ -1,40 +1,48 @@
 "use client";
 
-
-import { Button, Input, TextArea } from "@heroui/react";
-
 import React from "react";
+import { Button, Input, TextArea } from "@heroui/react";
+import { authClient } from "@/lib/auth-client";
 
 const AddPetPage = () => {
+    const { data: session } = authClient.useSession();
 
     const onSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
-        const pet = Object.fromEntries(formData.entries());
 
-        const res = await fetch("http://localhost:8000/pets", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(pet),
-        });
+        const pet = {
+            ...Object.fromEntries(formData.entries()),
+            ownerEmail: session?.user?.email,
+            ownerName: session?.user?.name,
+            createdAt: new Date(),
+        };
 
-        const data = await res.json();
+        try {
+            const res = await fetch("http://localhost:8000/pets", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(pet),
+            });
 
-        if (res.ok) {
-            window.location.href = "/all-pets";
+            const data = await res.json();
+
+            if (data.insertedId || data.acknowledged) {
+                alert("Pet Added Successfully!");
+                e.target.reset();
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Something went wrong!");
         }
-        console.log(data);
     };
-
-
 
     return (
         <div className="min-h-screen bg-purple-700 py-8 px-4">
             <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-lg p-6 md:p-8">
-
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-800">
                         Add New Pet
@@ -44,9 +52,10 @@ const AddPetPage = () => {
                     </p>
                 </div>
 
-                <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                    {/* Pet Name */}
+                <form
+                    onSubmit={onSubmit}
+                    className="grid grid-cols-1 md:grid-cols-2 gap-5"
+                >
                     <Input
                         label="Pet Name"
                         name="petName"
@@ -54,7 +63,6 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Breed */}
                     <Input
                         label="Breed"
                         name="breed"
@@ -62,7 +70,6 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Age */}
                     <Input
                         label="Age"
                         name="age"
@@ -70,14 +77,13 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Gender */}
                     <div>
                         <label className="block text-sm font-medium mb-2">
                             Gender
                         </label>
                         <select
                             name="gender"
-                            className="w-full h-14 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full h-14 px-3 border border-gray-300 rounded-xl"
                         >
                             <option value="">Select Gender</option>
                             <option value="Male">Male</option>
@@ -85,14 +91,13 @@ const AddPetPage = () => {
                         </select>
                     </div>
 
-                    {/* Size */}
                     <div>
                         <label className="block text-sm font-medium mb-2">
                             Size
                         </label>
                         <select
                             name="size"
-                            className="w-full h-14 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full h-14 px-3 border border-gray-300 rounded-xl"
                         >
                             <option value="">Select Size</option>
                             <option value="Small">Small (0-25 lbs)</option>
@@ -101,7 +106,6 @@ const AddPetPage = () => {
                         </select>
                     </div>
 
-                    {/* Color */}
                     <Input
                         label="Color"
                         name="color"
@@ -109,7 +113,6 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Location */}
                     <Input
                         label="Location"
                         name="location"
@@ -117,7 +120,6 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Image URL */}
                     <Input
                         label="Image URL"
                         name="image"
@@ -125,14 +127,13 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Vaccinated */}
                     <div>
                         <label className="block text-sm font-medium mb-2">
                             Vaccinated
                         </label>
                         <select
                             name="vaccinated"
-                            className="w-full h-14 px-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full h-14 px-3 border border-gray-300 rounded-xl"
                         >
                             <option value="">Select Status</option>
                             <option value="Yes">Yes</option>
@@ -140,7 +141,6 @@ const AddPetPage = () => {
                         </select>
                     </div>
 
-                    {/* Adoption Fee */}
                     <Input
                         label="Adoption Fee"
                         name="adoptionFee"
@@ -148,25 +148,21 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Pet Story */}
                     <div className="md:col-span-2">
                         <TextArea
                             label="Pet Story"
                             name="description"
                             placeholder="Tell us about this pet..."
                             variant="bordered"
-
                         />
                     </div>
 
-                    {/* Shelter Section */}
                     <div className="md:col-span-2 mt-4">
                         <h2 className="text-xl font-semibold text-gray-800">
                             Shelter Information
                         </h2>
                     </div>
 
-                    {/* Shelter Name */}
                     <Input
                         label="Shelter Name"
                         name="shelterName"
@@ -174,7 +170,6 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/*  Email */}
                     <Input
                         type="email"
                         label="Shelter Email"
@@ -183,7 +178,6 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Shelter Phone */}
                     <Input
                         label="Shelter Phone"
                         name="shelterPhone"
@@ -191,7 +185,6 @@ const AddPetPage = () => {
                         variant="bordered"
                     />
 
-                    {/* Shelter Address */}
                     <Input
                         label="Shelter Address"
                         name="shelterAddress"
@@ -205,7 +198,6 @@ const AddPetPage = () => {
                             name="adoptionPolicy"
                             placeholder="Write shelter adoption policy..."
                             variant="bordered"
-
                         />
                     </div>
 
@@ -217,7 +209,6 @@ const AddPetPage = () => {
                             Add Pet
                         </Button>
                     </div>
-
                 </form>
             </div>
         </div>

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 const PetCard = ({ pets }) => {
 
+
     console.log("pets:", pets);
 
 

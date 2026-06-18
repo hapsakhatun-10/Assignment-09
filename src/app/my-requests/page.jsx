@@ -8,43 +8,26 @@ import { authClient } from "@/lib/auth-client";
 
 export default function MyRequestsPage() {
     const { data: session } = authClient.useSession();
-
     const [requests, setRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!session?.user?.email) return;
+
         const fetchRequests = async () => {
-            try {
-                if (!session?.user?.email) return;
+            const res = await fetch(
+                `http://localhost:8000/adoption-requests?email=${session.user.email}`
+            );
 
-                const res = await fetch(
-                    `http://localhost:8000/adoption-requests?email=${session.user.email}`
-                );
-
-                const data = await res.json();
-                setRequests(data || []);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-
-            console.log(session?.user?.email);
+            const data = await res.json();
+            setRequests(data);
         };
 
         fetchRequests();
-    }, [session]);
 
-    if (loading) {
-        return (
-            <div className="p-10 text-purple-600 font-semibold">
-                Loading requests...
-            </div>
-        );
-    }
+        const interval = setInterval(fetchRequests, 3000); // auto refresh
 
-
-
+        return () => clearInterval(interval);
+    }, [session?.user?.email]);
     return (
         <div className="mx-auto px-6 py-10">
 
@@ -79,54 +62,44 @@ export default function MyRequestsPage() {
                                 {/* Left */}
                                 <div className="flex items-start gap-5">
 
-                                    {/* Image */}
                                     {request.image ? (
                                         <Image
                                             src={request.image}
                                             alt={request.petName}
                                             width={90}
                                             height={90}
-                                            className="rounded-2xl object-cover w-24 h-24 ring-2 ring-purple-200 group-hover:ring-purple-400 transition"
+                                            className="rounded-2xl object-cover w-24 h-24"
                                         />
                                     ) : (
-                                        <div className="w-24 h-24 flex items-center justify-center bg-purple-50 text-purple-400 rounded-2xl text-xs">
+                                        <div className="w-24 h-24 bg-gray-200 rounded-2xl flex items-center justify-center text-xs">
                                             No Image
                                         </div>
                                     )}
 
-                                    {/* Info */}
                                     <div className="space-y-1">
 
-                                        <h2 className="text-2xl font-bold text-gray-900 group-hover:text-purple-600 transition">
+                                        <h2 className="text-2xl font-bold">
                                             {request.petName}
                                         </h2>
 
-                                        <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
-                                            <FiClock className="text-purple-500" />
+                                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                                            <FiClock />
                                             <span>
-                                                Requested:{" "}
-                                                <span className="font-medium text-gray-800">
-                                                    {request.requestedAt
-                                                        ? new Date(request.requestedAt).toLocaleString()
-                                                        : "N/A"}
-                                                </span>
+                                                {request.requestedAt
+                                                    ? new Date(request.requestedAt).toLocaleString()
+                                                    : "N/A"}
                                             </span>
                                         </div>
 
-                                        <div className="flex items-start gap-2 text-sm text-gray-600 mt-1">
-                                            <FiMapPin className="text-purple-500 mt-0.5" />
-                                            <span>
-                                                <span className="font-medium text-gray-800">
-                                                    Address:
-                                                </span>{" "}
-                                                {request.address}
-                                            </span>
+                                        <div className="flex items-start gap-2 text-sm text-gray-600">
+                                            <FiMapPin />
+                                            <span>{request.address}</span>
                                         </div>
 
                                         {request.message && (
-                                            <div className="flex items-start gap-2 text-sm text-gray-500 mt-1">
-                                                <FiMessageSquare className="text-purple-400 mt-0.5" />
-                                                <span className="italic line-clamp-2">
+                                            <div className="flex items-start gap-2 text-sm text-gray-500">
+                                                <FiMessageSquare />
+                                                <span className="italic">
                                                     {request.message}
                                                 </span>
                                             </div>
@@ -135,10 +108,7 @@ export default function MyRequestsPage() {
                                     </div>
                                 </div>
 
-                                {/* Right */}
-                                <div className="flex items-center">
-                                    <CancelButton id={request._id} />
-                                </div>
+                                <CancelButton id={request._id} />
 
                             </div>
                         </div>
@@ -146,5 +116,5 @@ export default function MyRequestsPage() {
                 )}
             </div>
         </div>
-    )
+    );
 }

@@ -1,62 +1,86 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function RequestPetFrom({ pet }) {
     const router = useRouter();
+
     const { data: session } = authClient.useSession();
+    const user = session?.user;
 
     if (!pet) {
-        return (
-            <div className="p-5 bg-white rounded-xl shadow">
-                Loading...
-            </div>
-        );
+        return <p>Pet not found</p>;
     }
+
+    const {
+        _id,
+        petName,
+        age,
+        location,
+        image,
+    } = pet;
 
     const handleRequest = async (e) => {
         e.preventDefault();
 
+        if (!user) {
+            toast.error("Please login first");
+            return;
+        }
+
         const form = e.target;
 
         const requestData = {
-            petId: pet._id,
-            petName: pet.petName,
-            petLocation: pet.location,
-            image: pet.image,
-            shelterEmail: pet.shelterEmail,
-            status: "Pending",
-            requestedAt: new Date(),
+            userId: user?.id || "",
+            userImage: user?.image || "",
+            userName: user?.name || "",
+            userEmail: user?.email || "",
 
-            pickupDate: form.pickupDate.value,
-            applicantName: form.name.value,
-            email: session?.user?.email,
+            petId: _id,
+            petName,
+            age,
+            location,
+            image,
+
+            requesterName: form.name.value,
             phone: form.phone.value,
+            pickupDate: form.pickupDate.value,
             address: form.address.value,
             message: form.message.value,
+
+            status: "Pending",
+            createdAt: new Date(),
         };
 
-        const res = await fetch("http://localhost:8000/adoption-requests/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestData),
-        });
+        try {
+            const res = await fetch(
+                "http://localhost:8000/adoption-requests",
+                {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                    body: JSON.stringify(requestData),
+                }
+            );
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (data.insertedId) {
-            alert("Request Sent");
-            router.push("/my-requests");
+            if (data.insertedId || data.acknowledged) {
+                toast.success("Request sent successfully!");
+                form.reset();
+                router.push("/my-requests");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to send request");
         }
     };
 
     return (
         <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-10 border border-purple-100">
-
-            {/* Header */}
             <div className="mb-5">
                 <h2 className="text-2xl font-bold text-purple-700">
                     Request Adoption
@@ -67,44 +91,47 @@ export default function RequestPetFrom({ pet }) {
             </div>
 
             <form onSubmit={handleRequest} className="space-y-4">
-
                 <input
                     name="name"
                     placeholder="Your Name"
-                    className="w-full border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none p-2 rounded-lg"
+                    defaultValue={user?.name || ""}
+                    required
+                    className="w-full border border-gray-200 p-2 rounded-lg"
                 />
 
                 <input
                     name="phone"
                     placeholder="Phone Number"
-                    className="w-full border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none p-2 rounded-lg"
+                    required
+                    className="w-full border border-gray-200 p-2 rounded-lg"
                 />
 
                 <input
                     name="pickupDate"
                     type="date"
-                    className="w-full border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none p-2 rounded-lg"
+                    required
+                    className="w-full border border-gray-200 p-2 rounded-lg"
                 />
 
                 <textarea
                     name="address"
                     placeholder="Your Address"
-                    className="w-full border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none p-2 rounded-lg"
+                    required
+                    className="w-full border border-gray-200 p-2 rounded-lg"
                 />
 
                 <textarea
                     name="message"
                     placeholder="Message (optional)"
-                    className="w-full border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none p-2 rounded-lg"
+                    className="w-full border border-gray-200 p-2 rounded-lg"
                 />
 
                 <button
                     type="submit"
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg transition font-medium"
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg"
                 >
                     Submit Request
                 </button>
-
             </form>
         </div>
     );
