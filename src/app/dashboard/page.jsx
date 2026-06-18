@@ -7,13 +7,13 @@ import MyRequestsPage from "../my-requests/page";
 
 
 export default function DashboardPage() {
-    const [activePage, setActivePage] = useState("home");
+    const [activePage, setActivePage] = useState("requests");
 
     return (
-        <div className="min-h-screen flex bg-gray-50">
+        <div className="min-h-screen flex bg-purple-200">
 
             {/* LEFT SIDEBAR */}
-            <div className="w-64 bg-white border-r p-6 space-y-4">
+            <div className="w-64 bg-purple-200 border-r p-6 space-y-4">
 
                 <h2 className="text-xl font-bold text-purple-700">
                     Dashboard
@@ -23,14 +23,20 @@ export default function DashboardPage() {
 
                     <button
                         onClick={() => setActivePage("requests")}
-                        className="block w-full text-left px-4 py-2 rounded-xl hover:bg-purple-50 text-gray-700"
+                        className={`block w-full text-left px-4 py-2 rounded-xl transition ${activePage === "requests"
+                                ? "bg-white text-purple-700 shadow"
+                                : "hover:bg-purple-50 text-gray-700"
+                            }`}
                     >
                         🐾 My Requests
                     </button>
 
                     <button
                         onClick={() => setActivePage("add-pets")}
-                        className="block w-full text-left px-4 py-2 rounded-xl hover:bg-purple-50 text-gray-700"
+                        className={`block w-full text-left px-4 py-2 rounded-xl transition ${activePage === "add-pets"
+                                ? "bg-white text-purple-700 shadow"
+                                : "hover:bg-purple-50 text-gray-700"
+                            }`}
                     >
                         ➕ Add Pet
                     </button>

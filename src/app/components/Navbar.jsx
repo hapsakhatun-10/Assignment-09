@@ -27,6 +27,8 @@ export default function Navbar() {
                 <div className="hidden lg:flex items-center gap-8 text-gray-700 font-medium">
                     <Link href="/">Home</Link>
                     <Link href="/all-pets">All Pets</Link>
+                    <Link href="/all-pets">All Pets</Link>
+
                 </div>
 
                 <div className="flex items-center gap-3">

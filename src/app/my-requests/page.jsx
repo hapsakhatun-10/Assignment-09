@@ -61,7 +61,7 @@ export default function MyRequestsPage() {
                     requests.map((request) => (
                         <div
                             key={request._id}
-                            className="group border border-purple-100 rounded-3xl p-6 bg-gradient-to-br from-white via-purple-50/30 to-white shadow-sm hover:shadow-lg transition-all duration-300"
+                            className="group border bg-white border-purple-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all duration-300"
                         >
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
 

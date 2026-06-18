@@ -41,23 +41,17 @@ const ProfileDropdown = ({ user }) => {
 
                     <Link
                         href="/dashboard"
-                        className="block px-4 py-2 text-sm hover:bg-purple-50"
+                        className="block px-4 py-2 text-sm hover:bg-purple-400"
                         onClick={() => setOpen(false)}
                     >
                         Dashboard
                     </Link>
 
-                    <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm hover:bg-purple-50"
-                        onClick={() => setOpen(false)}
-                    >
-                        Profile
-                    </Link>
+
 
                     <button
                         onClick={handleSignOut}
-                        className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
+                        className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-100"
                     >
                         Logout
                     </button>
