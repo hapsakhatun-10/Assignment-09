@@ -4,15 +4,14 @@ import Link from "next/link";
 import { Avatar, Button } from "@heroui/react";
 import { FaPaw } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
+import ProfileDropdown from "./ProfileDropdown";
 
 export default function Navbar() {
 
     const { data: session } = authClient.useSession();
     const user = session?.user;
 
-    const handleSignOut = async () => {
-        await authClient.signOut();
-    };
+
 
     return (
         <nav className="sticky top-0 z-50 bg-white shadow-md">
@@ -28,43 +27,17 @@ export default function Navbar() {
                 <div className="hidden lg:flex items-center gap-8 text-gray-700 font-medium">
                     <Link href="/">Home</Link>
                     <Link href="/all-pets">All Pets</Link>
-                    <Link href="/add-pets">Add Pets</Link>
                 </div>
 
                 <div className="flex items-center gap-3">
                     {user ? (
-                        <>
-                            <Avatar
-                                src={user?.image}
-                                name={user?.name}
-                                showFallback
-                                className="border-2 border-purple-500"
-                            />
-
-                            <Button
-                                size="sm"
-                                color="danger"
-                                variant="flat"
-                                onPress={handleSignOut}
-                            >
-                                Logout
-                            </Button>
-                        </>
+                        <ProfileDropdown
+                            user={user}
+                        />
                     ) : (
                         <>
-                            <Link
-                                href="/login"
-                                className="px-4 text-black hover:text-purple-600 transition"
-                            >
-                                Log In
-                            </Link>
-
-                            <Link
-                                href="/signup"
-                                className="bg-purple-700 text-white px-6 py-2 rounded-full hover:bg-purple-800 transition"
-                            >
-                                Sign Up
-                            </Link>
+                            <li><Link href="/login">Login</Link></li>
+                            <li><Link href="/signup">Sign Up</Link></li>
                         </>
                     )}
                 </div>

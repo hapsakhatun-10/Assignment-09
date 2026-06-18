@@ -1,6 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 export default function RequestPetFrom({ pet }) {
+    const router = useRouter();
+
+    if (!pet) {
+        return <div className="p-10 text-center">Loading...</div>;
+    }
 
     const handleRequest = async (e) => {
         e.preventDefault();
@@ -15,6 +22,8 @@ export default function RequestPetFrom({ pet }) {
             shelterEmail: pet.shelterEmail,
             status: "Pending",
             requestedAt: new Date(),
+
+            pickupDate: form.pickupDate.value,
 
             applicantName: form.name.value,
             email: form.email.value,
@@ -35,10 +44,9 @@ export default function RequestPetFrom({ pet }) {
 
         if (data.insertedId) {
             alert("Request Sent");
-            window.location.href = "/my-requests";
+            router.push("/my-requests");
         }
     };
-
     return (
         <div className="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl p-8 border">
 
