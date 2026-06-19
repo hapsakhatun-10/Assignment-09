@@ -66,21 +66,21 @@ export default function Footer() {
                         </h3>
 
                         <div className="flex flex-col gap-3 text-purple-100">
-                            <Link href="/adoption" className="hover:text-white transition">
+                            <p className="hover:text-white transition cursor-pointer">
                                 Adoption Guide
-                            </Link>
+                            </p>
 
-                            <Link href="/faq" className="hover:text-white transition">
+                            <p className="hover:text-white transition cursor-pointer">
                                 FAQ
-                            </Link>
+                            </p>
 
-                            <Link href="/privacy-policy" className="hover:text-white transition">
+                            <p className="hover:text-white transition cursor-pointer">
                                 Privacy Policy
-                            </Link>
+                            </p>
 
-                            <Link href="/terms" className="hover:text-white transition">
+                            <p className="hover:text-white transition cursor-pointer">
                                 Terms & Conditions
-                            </Link>
+                            </p>
                         </div>
                     </div>
 
