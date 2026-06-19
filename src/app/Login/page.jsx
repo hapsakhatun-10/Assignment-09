@@ -105,6 +105,13 @@ const LoginPage = () => {
                     <FcGoogle className="text-xl" /> Sign in with Google
                 </Button>
 
+                <p className="text-center text-sm text-gray-500 mt-6">
+                    Don't have an account?{" "}
+                    <a href="/signup" className="text-purple-700 font-semibold hover:underline">
+                        Sign up
+                    </a>
+                </p>
+
             </Card>
         </div>
     );

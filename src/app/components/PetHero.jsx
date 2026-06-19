@@ -3,11 +3,11 @@ import React from 'react';
 const PetHero = () => {
     return (
 
-        <section className="relative overflow-hidden bg-purple-50 h-68">
-            <div className="max-w-7xl mx-auto px-6 py-8">
+        <section className="relative overflow-hidden bg-purple-50 min-h-[200px] md:h-68">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8">
 
                 <div className="mb-5">
-                    <h1 className="text-3xl font-bold text-purple-800">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-purple-800">
                         Find Your Perfect Pet Companion
                     </h1>
                     <p className="text-gray-600 mt-2">
@@ -17,7 +17,7 @@ const PetHero = () => {
 
 
 
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     {/* Pets Count */}
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm px-5 py-4 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">

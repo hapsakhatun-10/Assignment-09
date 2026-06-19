@@ -1,7 +1,7 @@
 export default function PetImage({ pet }) {
     return (
         <div className="bg-white rounded-3xl overflow-hidden shadow-lg">
-            <div className="h-[520px] overflow-hidden">
+            <div className="h-[300px] md:h-[520px] overflow-hidden">
                 <img
                     src={pet.image || "https://via.placeholder.com/800"}
                     alt={pet.petName}

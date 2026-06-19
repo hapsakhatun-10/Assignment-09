@@ -3,17 +3,19 @@
 import { useState } from "react";
 import { Avatar, Button } from "@heroui/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 const ProfileDropdown = ({ user }) => {
+    const router = useRouter();
     const [open, setOpen] = useState(false);
 
     if (!user) return null;
 
     const handleLogout = async () => {
         await authClient.signOut();
-
-
+        router.replace("/");
+        router.refresh();
     };
 
     return (
@@ -28,7 +30,7 @@ const ProfileDropdown = ({ user }) => {
                     name={user?.name || "User"}
                 />
 
-                <div className="leading-tight">
+                <div className="leading-tight hidden md:block">
                     <p className="text-sm font-semibold text-gray-800">
                         {user?.name}
                     </p>
