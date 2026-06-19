@@ -4,6 +4,7 @@ import React from "react";
 import { Button, Input, TextArea } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import { getAuthToken } from "@/lib/api";
+import toast from "react-hot-toast";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
@@ -36,12 +37,12 @@ const AddPetPage = () => {
             const data = await res.json();
 
             if (data.insertedId || data.acknowledged) {
-                alert("Pet Added Successfully!");
+                toast.success("Pet Added Successfully!");
                 e.target.reset();
             }
         } catch (error) {
             console.error(error);
-            alert("Something went wrong!");
+            toast.error("Something went wrong!");
         }
     };
 

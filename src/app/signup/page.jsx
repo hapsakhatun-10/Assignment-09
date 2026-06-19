@@ -7,6 +7,7 @@ import { FaPaw } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
 import { Icon } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 export default function SignUpPage() {
 
 
@@ -19,12 +20,12 @@ export default function SignUpPage() {
         const user = Object.fromEntries(formData.entries());
 
         if (user.password !== user.confirmPassword) {
-            alert("Passwords do not match");
+            toast.error("Passwords do not match");
             return;
         }
 
         if (user.password.length < 8) {
-            alert("Password must be at least 8 characters");
+            toast.error("Password must be at least 8 characters");
             return;
         }
 
