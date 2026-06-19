@@ -9,6 +9,7 @@ export default function RequestPetFrom({ pet }) {
 
     const { data: session } = authClient.useSession();
     const user = session?.user;
+    const userEmail = user?.email;
 
     if (!pet) {
         return <p>Pet not found</p>;
@@ -20,6 +21,7 @@ export default function RequestPetFrom({ pet }) {
         age,
         location,
         image,
+        ownerEmail,
     } = pet;
 
     const handleRequest = async (e) => {
@@ -30,19 +32,26 @@ export default function RequestPetFrom({ pet }) {
             return;
         }
 
+        if (ownerEmail === userEmail) {
+            toast.error("You cannot request your own pet");
+            return;
+        }
+
         const form = e.target;
 
         const requestData = {
             userId: user?.id || "",
             userImage: user?.image || "",
             userName: user?.name || "",
-            userEmail: user?.email || "",
+            userEmail: userEmail,
 
             petId: _id,
             petName,
             age,
             location,
             image,
+
+            ownerEmail: pet.ownerEmail,
 
             requesterName: form.name.value,
             phone: form.phone.value,
@@ -53,7 +62,6 @@ export default function RequestPetFrom({ pet }) {
             status: "Pending",
             createdAt: new Date(),
         };
-
         try {
             const res = await fetch(
                 "http://localhost:8000/adoption-requests",
@@ -77,7 +85,10 @@ export default function RequestPetFrom({ pet }) {
             console.error(error);
             toast.error("Failed to send request");
         }
+
+        console.log("PET DATA:", pet);
     };
+
 
     return (
         <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-10 border border-purple-100">
@@ -85,53 +96,71 @@ export default function RequestPetFrom({ pet }) {
                 <h2 className="text-2xl font-bold text-purple-700">
                     Request Adoption
                 </h2>
-                <p className="text-sm text-gray-500">
-                    Fill the form to request this pet
-                </p>
             </div>
 
-            <form onSubmit={handleRequest} className="space-y-4">
+            <form onSubmit={handleRequest} className="space-y-5">
+
                 <input
                     name="name"
-                    placeholder="Your Name"
                     defaultValue={user?.name || ""}
                     required
-                    className="w-full border border-gray-200 p-2 rounded-lg"
+                    placeholder="Your Name"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-purple-400
+                   focus:border-purple-400 transition shadow-sm"
                 />
 
                 <input
                     name="phone"
-                    placeholder="Phone Number"
                     required
-                    className="w-full border border-gray-200 p-2 rounded-lg"
+                    placeholder="Phone Number"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-purple-400
+                   focus:border-purple-400 transition shadow-sm"
                 />
 
                 <input
                     name="pickupDate"
                     type="date"
                     required
-                    className="w-full border border-gray-200 p-2 rounded-lg"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-purple-400
+                   focus:border-purple-400 transition shadow-sm"
                 />
 
                 <textarea
                     name="address"
-                    placeholder="Your Address"
                     required
-                    className="w-full border border-gray-200 p-2 rounded-lg"
+                    placeholder="Your Address"
+                    rows={2}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-purple-400
+                   focus:border-purple-400 transition shadow-sm resize-none"
                 />
 
                 <textarea
                     name="message"
                     placeholder="Message (optional)"
-                    className="w-full border border-gray-200 p-2 rounded-lg"
+                    rows={2}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-purple-400
+                   focus:border-purple-400 transition shadow-sm resize-none"
                 />
 
                 <button
                     type="submit"
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg"
+                    disabled={ownerEmail === userEmail}
+                    className={`w-full py-3 rounded-xl font-semibold text-white transition-all duration-300 shadow-md
+            ${ownerEmail === userEmail
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
+                        }`}
                 >
-                    Submit Request
+                    {ownerEmail === userEmail
+                        ? "You Own This Pet"
+                        : "Submit Request"}
                 </button>
+
             </form>
         </div>
     );

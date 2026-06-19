@@ -18,7 +18,15 @@ export default function SignUpPage() {
         const formData = new FormData(e.currentTarget);
         const user = Object.fromEntries(formData.entries());
 
+        if (user.password !== user.confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
 
+        if (user.password.length < 8) {
+            alert("Password must be at least 8 characters");
+            return;
+        }
 
         const { data, error } = await authClient.signUp.email({
             email: user.email,
@@ -27,16 +35,18 @@ export default function SignUpPage() {
             image: user.image,
         });
 
-        if (data) {
-            router.push("/");
+        if (error) {
+            console.log(error);
+            return;
         }
-        else {
-            toast.error("Failed to add pet!");
-        }
-        console.log(user)
+
+        router.push("/");
+    };
 
 
-    }
+
+
+
 
 
     const handleGoogleSignin = async () => {

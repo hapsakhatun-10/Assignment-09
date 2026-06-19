@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import { PawPrint } from "lucide-react";
 import { useEffect, useState } from "react";
 
-// 👉 যদি auth থাকে (NextAuth / better-auth / custom)
 import { authClient } from "@/lib/auth-client";
+import Link from "next/link";
+import Image from "next/image";
 
 const MyListingPage = () => {
     const router = useRouter();
@@ -46,7 +47,7 @@ const MyListingPage = () => {
 
     const isEmpty = pets.length === 0;
 
-    // loading UI
+
     if (loading) {
         return (
             <div className="p-6 text-gray-500">
@@ -89,19 +90,22 @@ const MyListingPage = () => {
                     </button>
                 </div>
             ) : (
-                /* LIST VIEW */
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {pets.map((pet) => (
                         <div
                             key={pet._id}
                             className="bg-white border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition"
                         >
-                            <img
-                                src={pet.image}
-                                alt={pet.petName}
-                                className="w-full h-48 object-cover"
-                            />
-
+                            <div className="overflow-hidden rounded-xl">
+                                <Image
+                                    src={pet.image}
+                                    alt={pet.petName}
+                                    width={500}
+                                    height={300}
+                                    className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
+                                />
+                            </div>
                             <div className="p-4">
                                 <h2 className="font-bold text-lg">
                                     {pet.petName}
@@ -111,9 +115,12 @@ const MyListingPage = () => {
                                     {pet.breed}
                                 </p>
 
-                                <button className="mt-3 text-sm text-purple-600 font-medium">
+                                <Link
+                                    href={`/all-pets/${pet._id}`}
+                                    className="mt-3 inline-block text-sm text-purple-600 font-medium hover:underline"
+                                >
                                     View Details
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     ))}

@@ -1,7 +1,14 @@
+import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
 
 const PetCard = ({ pets }) => {
+
+
+    const { data: session } = authClient.useSession();
+    const user = session?.user;
+
+
     return (
         <div className="  px-6 py-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -65,7 +72,7 @@ const PetCard = ({ pets }) => {
 
                             <div className="mt-5">
                                 <Link
-                                    href={`/all-pets/${pet._id}`}
+                                    href={user ? `/all-pets/${pet._id}` : "/signup"}
                                     className="w-full block text-center bg-purple-600 hover:bg-purple-800 text-white font-semibold py-3 rounded-xl transition-all duration-300"
                                 >
                                     View Details

@@ -10,8 +10,10 @@ const ProfileDropdown = ({ user }) => {
 
     if (!user) return null;
 
-    const handleSignOut = async () => {
+    const handleLogout = async () => {
         await authClient.signOut();
+
+
     };
 
     return (
@@ -51,7 +53,7 @@ const ProfileDropdown = ({ user }) => {
 
 
                     <button
-                        onClick={handleSignOut}
+                        onClick={handleLogout}
                         className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-100"
                     >
                         Logout
