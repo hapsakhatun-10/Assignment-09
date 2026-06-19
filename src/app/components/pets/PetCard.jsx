@@ -18,8 +18,8 @@ const PetCard = ({ pets }) => {
                         <div className="relative">
                             {pet.image ? (
                                 <Image
-                                    src={pet.image}
-                                    alt={pet.petName}
+                                    src={pet.image?.trim() ? pet.image : "/placeholder.png"}
+                                    alt={pet.petName || "Pet"}
                                     width={600}
                                     height={400}
                                     className="w-full h-64 object-cover"

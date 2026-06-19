@@ -64,9 +64,9 @@ const AddPetPage = () => {
                     />
 
                     <Input
-                        label="Breed"
-                        name="breed"
-                        placeholder="Mixed Breed"
+                        label="Species"
+                        name="species"
+                        placeholder="Dog,cat,Bird"
                         variant="bordered"
                     />
 

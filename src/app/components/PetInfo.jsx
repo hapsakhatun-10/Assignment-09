@@ -18,7 +18,7 @@ export default function PetInfoGrid({ pet }) {
 
             <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-6">
 
-                <Info icon={<PawPrint />} label="Breed" value={pet.breed || "Not specified"} />
+                <Info icon={<PawPrint />} label="Species" value={pet.species || "Not specified"} />
                 <Info icon={<Cake />} label="Age" value={pet.age} />
                 <Info icon={<Mars />} label="Gender" value={pet.gender} />
                 <Info icon={<Ruler />} label="Size" value={pet.size} />

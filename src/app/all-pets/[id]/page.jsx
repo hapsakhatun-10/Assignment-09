@@ -1,3 +1,6 @@
+
+import { DeleteAlert } from "@/app/components/DeleteAlert";
+import { EditModal } from "@/app/components/EditModal";
 import PetDetailsSection from "@/app/components/PetDetailSec";
 import PetImage from "@/app/components/PetImage";
 import PetInfoGrid from "@/app/components/PetInfo";
@@ -14,6 +17,10 @@ const PetDetailsPage = async ({ params }) => {
     return (
         <div className="min-h-screen bg-purple-100 py-10 px-4">
 
+            <div className="flex items-center gap-3 justify-center  mt-5 mb-3">
+                <EditModal pet={pet} />
+                <DeleteAlert pet={pet} />
+            </div>
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 {/* LEFT: Info Section */}
