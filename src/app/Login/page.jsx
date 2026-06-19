@@ -5,6 +5,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaPaw } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
 
@@ -29,7 +30,7 @@ const LoginPage = () => {
             router.push("/");
         }
         else {
-            toast.error("Failed to add pet!");
+            toast.error("Login failed!");
         }
         console.log(user)
 

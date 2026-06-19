@@ -34,15 +34,15 @@ const AddPetPage = () => {
                 body: JSON.stringify(pet),
             });
 
-            const data = await res.json();
-
-            if (data.insertedId || data.acknowledged) {
-                toast.success("Pet Added Successfully!");
-                e.target.reset();
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to add pet");
             }
+
+            toast.success("Pet Added Successfully!");
+            e.target.reset();
         } catch (error) {
-            console.error(error);
-            toast.error("Something went wrong!");
+            toast.error(error.message || "Something went wrong!");
         }
     };
 

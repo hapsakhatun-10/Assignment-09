@@ -4,7 +4,13 @@ export async function getAuthToken() {
     const res = await fetch("/api/auth/token", {
         credentials: "include",
     });
+    if (!res.ok) {
+        throw new Error("Failed to get auth token");
+    }
     const data = await res.json();
+    if (!data.token) {
+        throw new Error("No auth token returned");
+    }
     return data.token;
 }
 

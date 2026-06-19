@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { getAuthToken } from "@/lib/api";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
@@ -23,17 +24,19 @@ const CancelButton = ({ id, onSuccess }) => {
                 }
             );
 
-            const data = await res.json();
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to cancel request");
+            }
 
-            if (res.ok) {
-                if (onSuccess) {
-                    onSuccess(id);
-                } else {
-                    window.location.reload();
-                }
+            toast.success("Request cancelled!");
+            if (onSuccess) {
+                onSuccess(id);
+            } else {
+                window.location.reload();
             }
         } catch (error) {
-            console.log(error);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

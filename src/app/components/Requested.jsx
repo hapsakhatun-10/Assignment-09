@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import CancelButton from "./CancelBtn";
 import { getAuthToken } from "@/lib/api";
 
@@ -13,14 +14,19 @@ export default function Requested({ email }) {
         if (!email) return;
 
         const fetchRequests = async () => {
-            const token = await getAuthToken();
-            const res = await fetch(`${SERVER_URL}/my-requests?email=${email}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            const data = await res.json();
-            setRequests(data);
+            try {
+                const token = await getAuthToken();
+                const res = await fetch(`${SERVER_URL}/my-requests?email=${email}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                if (!res.ok) throw new Error("Failed to fetch requests");
+                const data = await res.json();
+                setRequests(Array.isArray(data) ? data : []);
+            } catch {
+                toast.error("Failed to load your requests");
+            }
         };
 
         fetchRequests();

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import PetHero from "../components/PetHero";
 import FilterSidebar from "../components/pets/FilterSidebar";
 import PetCard from "../components/pets/PetCard";
@@ -13,11 +14,19 @@ export default function AllPetsPage() {
     const [species, setSpecies] = useState("");
 
     useEffect(() => {
-        fetch(
-            `${SERVER_URL}/pets?search=${search}&species=${species}`
-        )
-            .then((res) => res.json())
-            .then((data) => setPets(data));
+        const fetchPets = async () => {
+            try {
+                const res = await fetch(
+                    `${SERVER_URL}/pets?search=${search}&species=${species}`
+                );
+                if (!res.ok) throw new Error("Failed to fetch pets");
+                const data = await res.json();
+                setPets(Array.isArray(data) ? data : []);
+            } catch {
+                toast.error("Failed to load pets");
+            }
+        };
+        fetchPets();
     }, [search, species]);
 
     return (

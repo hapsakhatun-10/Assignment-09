@@ -3,6 +3,7 @@
 import { TrashBin } from "@gravity-ui/icons";
 import { AlertDialog, Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { getAuthToken } from "@/lib/api";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
@@ -13,17 +14,25 @@ export function DeleteAlert({ pet }) {
     const router = useRouter();
 
     const handleDelete = async () => {
-        const token = await getAuthToken();
-        const res = await fetch(`${SERVER_URL}/pets/${_id}`, {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        try {
+            const token = await getAuthToken();
+            const res = await fetch(`${SERVER_URL}/pets/${_id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
-        const data = await res.json();
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to delete pet");
+            }
 
-        router.push("/all-pets");
+            toast.success("Pet deleted successfully!");
+            router.push("/all-pets");
+        } catch (err) {
+            toast.error(err.message);
+        }
     };
 
     return (

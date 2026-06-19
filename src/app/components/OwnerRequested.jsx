@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import ApproveButton from "./ApproveButton";
 import RejectButton from "./RejectButton";
 import { getAuthToken } from "@/lib/api";
@@ -24,7 +25,7 @@ export default function OwnerRequests({ email }) {
                 const data = await res.json();
                 setRequests(data);
             } catch (err) {
-                console.log(err);
+                toast.error("Failed to load owner requests");
             }
         };
 

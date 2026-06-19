@@ -12,6 +12,7 @@ import {
 } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { BiEdit } from "react-icons/bi";
+import toast from "react-hot-toast";
 import { getAuthToken } from "@/lib/api";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
@@ -33,23 +34,30 @@ export function EditModal({ pet }) {
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData(e.currentTarget);
-        const petData = Object.fromEntries(formData.entries());
+        try {
+            const formData = new FormData(e.currentTarget);
+            const petData = Object.fromEntries(formData.entries());
 
-        const token = await getAuthToken();
-        const res = await fetch(`${SERVER_URL}/pets/${_id}`, {
-            method: "PATCH",
-            headers: {
-                "content-type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(petData),
-        });
+            const token = await getAuthToken();
+            const res = await fetch(`${SERVER_URL}/pets/${_id}`, {
+                method: "PATCH",
+                headers: {
+                    "content-type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(petData),
+            });
 
-        const data = await res.json();
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to update pet");
+            }
 
-
-        router.push("/all-pets");
+            toast.success("Pet updated successfully!");
+            router.push("/all-pets");
+        } catch (err) {
+            toast.error(err.message);
+        }
     };
 
     return (
@@ -84,7 +92,7 @@ export function EditModal({ pet }) {
                                         </div>
 
                                         {/* Species */}
-                                        <TextField defaultValue={species} name="Species" isRequired>
+                                        <TextField defaultValue={species} name="species" isRequired>
                                             <Label>Species</Label>
                                             <Input className="rounded-2xl" />
                                         </TextField>

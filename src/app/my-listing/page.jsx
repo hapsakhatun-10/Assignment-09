@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { PawPrint } from "lucide-react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 import { authClient } from "@/lib/auth-client";
 import { getAuthToken } from "@/lib/api";
@@ -43,7 +44,7 @@ const MyListingPage = () => {
                 const data = await res.json();
                 setPets(data);
             } catch (err) {
-                console.log(err);
+                toast.error("Failed to load your listings");
             } finally {
                 setLoading(false);
             }
@@ -120,9 +121,9 @@ const MyListingPage = () => {
                                     {pet.petName}
                                 </h2>
 
-                                <p className="text-sm text-gray-500">
+                                {/* <p className="text-sm text-gray-500">
                                     {pet.breed}
-                                </p>
+                                </p> */}
 
                                 <Link
                                     href={`/all-pets/${pet._id}`}

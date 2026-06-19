@@ -11,6 +11,7 @@ import {
     CheckCircle2,
     PlusSquareIcon,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { authClient } from "@/lib/auth-client";
 import { getAuthToken } from "@/lib/api";
@@ -54,7 +55,7 @@ export default function DashboardPage() {
                 const data = await res.json();
                 setPets(data || []);
             } catch (err) {
-                console.log(err);
+                toast.error("Failed to load dashboard data");
             } finally {
                 setLoading(false);
             }

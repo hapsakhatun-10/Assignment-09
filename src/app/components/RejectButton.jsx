@@ -1,5 +1,6 @@
 "use client";
 
+import toast from "react-hot-toast";
 import { getAuthToken } from "@/lib/api";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
@@ -12,26 +13,32 @@ export default function RejectButton({
 
 
     const handleReject = async () => {
-        const token = await getAuthToken();
-        const res = await fetch(
-            `${SERVER_URL}/adoption-requests/${requestId}/status`,
-            {
-                method: "PATCH",
-                headers: {
-                    "content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    status: "Rejected",
-                    petId,
-                }),
+        try {
+            const token = await getAuthToken();
+            const res = await fetch(
+                `${SERVER_URL}/adoption-requests/${requestId}/status`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        status: "Rejected",
+                        petId,
+                    }),
+                }
+            );
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to reject request");
             }
-        );
 
-        const data = await res.json();
-
-        if (data.modifiedCount > 0) {
+            toast.success("Request rejected!");
             window.location.reload();
+        } catch (err) {
+            toast.error(err.message);
         }
     };
 

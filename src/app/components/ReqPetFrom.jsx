@@ -79,19 +79,17 @@ export default function RequestPetFrom({ pet }) {
                 }
             );
 
-            const data = await res.json();
-
-            if (data.insertedId || data.acknowledged) {
-                toast.success("Request sent successfully!");
-                form.reset();
-                router.push("/my-requests");
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to send request");
             }
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to send request");
-        }
 
-        console.log("PET DATA:", pet);
+            toast.success("Request sent successfully!");
+            form.reset();
+            router.push("/my-requests");
+        } catch (error) {
+            toast.error(error.message);
+        }
     };
 
 

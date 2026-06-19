@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { DeleteAlert } from "@/app/components/DeleteAlert";
 import { EditModal } from "@/app/components/EditModal";
 import PetDetailsSection from "@/app/components/PetDetailSec";
@@ -14,27 +15,38 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000"
 
 export default function PetDetailsPage() {
     const { id } = useParams();
+    const router = useRouter();
     const [pet, setPet] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!id) return;
 
         const fetchPet = async () => {
-            const token = await getAuthToken();
-            const res = await fetch(`${SERVER_URL}/pets/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                cache: "no-store",
-            });
-            const data = await res.json();
-            setPet(data);
+            try {
+                const token = await getAuthToken();
+                const res = await fetch(`${SERVER_URL}/pets/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    cache: "no-store",
+                });
+                if (!res.ok) throw new Error("Failed to fetch pet details");
+                const data = await res.json();
+                if (!data) throw new Error("Pet not found");
+                setPet(data);
+            } catch (err) {
+                toast.error(err.message);
+                router.push("/error");
+            } finally {
+                setLoading(false);
+            }
         };
 
         fetchPet();
-    }, [id]);
+    }, [id, router]);
 
-    if (!pet) return <div className="min-h-screen bg-purple-100 py-10 px-4" />;
+    if (loading || !pet) return <div className="min-h-screen bg-purple-100 py-10 px-4" />;
 
     return (
         <div className="min-h-screen bg-purple-100 py-10 px-4">

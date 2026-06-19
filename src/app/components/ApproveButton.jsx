@@ -1,5 +1,6 @@
 "use client";
 
+import toast from "react-hot-toast";
 import { getAuthToken } from "@/lib/api";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
@@ -11,26 +12,36 @@ export default function ApproveButton({
 }) {
 
     const handleApprove = async () => {
-        const token = await getAuthToken();
-        const res = await fetch(
-            `${SERVER_URL}/adoption-requests/${requestId}/status`,
-            {
-                method: "PATCH",
-                headers: {
-                    "content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    status: "Approved",
-                    petId,
-                }),
+        try {
+            const token = await getAuthToken();
+            const res = await fetch(
+                `${SERVER_URL}/adoption-requests/${requestId}/status`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        status: "Approved",
+                        petId,
+                    }),
+                }
+            );
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to approve request");
             }
-        );
 
-        const data = await res.json();
-
-        if (data.modifiedCount > 0) {
-            window.location.reload();
+            toast.success("Request approved!");
+            if (onSuccess) {
+                onSuccess();
+            } else {
+                window.location.reload();
+            }
+        } catch (err) {
+            toast.error(err.message);
         }
     };
 
