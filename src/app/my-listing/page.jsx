@@ -5,8 +5,11 @@ import { PawPrint } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
+import { getAuthToken } from "@/lib/api";
 import Link from "next/link";
 import Image from "next/image";
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
 const MyListingPage = () => {
     const router = useRouter();
@@ -27,8 +30,14 @@ const MyListingPage = () => {
             try {
                 setLoading(true);
 
+                const token = await getAuthToken();
                 const res = await fetch(
-                    `http://localhost:8000/my-listings/${userEmail}`
+                    `${SERVER_URL}/my-listings/${userEmail}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 );
 
                 const data = await res.json();

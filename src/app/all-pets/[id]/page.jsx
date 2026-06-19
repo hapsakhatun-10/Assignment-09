@@ -1,18 +1,40 @@
+"use client";
 
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { DeleteAlert } from "@/app/components/DeleteAlert";
 import { EditModal } from "@/app/components/EditModal";
 import PetDetailsSection from "@/app/components/PetDetailSec";
 import PetImage from "@/app/components/PetImage";
 import PetInfoGrid from "@/app/components/PetInfo";
 import RequestPetFrom from "@/app/components/ReqPetFrom";
+import { getAuthToken } from "@/lib/api";
 
-const PetDetailsPage = async ({ params }) => {
-    const { id } = await params;
-    const res = await fetch(`http://localhost:8000/pets/${id}`, {
-        cache: "no-store",
-    });
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
-    const pet = await res.json();
+export default function PetDetailsPage() {
+    const { id } = useParams();
+    const [pet, setPet] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchPet = async () => {
+            const token = await getAuthToken();
+            const res = await fetch(`${SERVER_URL}/pets/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                cache: "no-store",
+            });
+            const data = await res.json();
+            setPet(data);
+        };
+
+        fetchPet();
+    }, [id]);
+
+    if (!pet) return <div className="min-h-screen bg-purple-100 py-10 px-4" />;
 
     return (
         <div className="min-h-screen bg-purple-100 py-10 px-4">
@@ -23,7 +45,6 @@ const PetDetailsPage = async ({ params }) => {
             </div>
             <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                {/* LEFT: Info Section */}
                 <div className="lg:col-span-2 space-y-6">
                     <div className="lg:col-span-1">
                         <PetImage pet={pet} />
@@ -32,7 +53,6 @@ const PetDetailsPage = async ({ params }) => {
                     <PetDetailsSection pet={pet} />
                 </div>
 
-                {/* RIGHT: Form Section */}
                 <div className="lg:col-span-1">
                     <div className="sticky top-10">
                         <RequestPetFrom pet={pet} />
@@ -43,6 +63,4 @@ const PetDetailsPage = async ({ params }) => {
 
         </div>
     );
-};
-
-export default PetDetailsPage;
+}

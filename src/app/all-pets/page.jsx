@@ -5,6 +5,8 @@ import PetHero from "../components/PetHero";
 import FilterSidebar from "../components/pets/FilterSidebar";
 import PetCard from "../components/pets/PetCard";
 
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
+
 export default function AllPetsPage() {
     const [pets, setPets] = useState([]);
     const [search, setSearch] = useState("");
@@ -12,7 +14,7 @@ export default function AllPetsPage() {
 
     useEffect(() => {
         fetch(
-            `http://localhost:8000/pets?search=${search}&species=${species}`
+            `${SERVER_URL}/pets?search=${search}&species=${species}`
         )
             .then((res) => res.json())
             .then((data) => setPets(data));

@@ -3,6 +3,9 @@
 import React from "react";
 import { Button, Input, TextArea } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
+import { getAuthToken } from "@/lib/api";
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
 const AddPetPage = () => {
     const { data: session } = authClient.useSession();
@@ -20,10 +23,12 @@ const AddPetPage = () => {
         };
 
         try {
-            const res = await fetch("http://localhost:8000/pets", {
+            const token = await getAuthToken();
+            const res = await fetch(`${SERVER_URL}/pets`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(pet),
             });

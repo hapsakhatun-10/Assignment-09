@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { getAuthToken } from "@/lib/api";
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
 const CancelButton = ({ id, onSuccess }) => {
     const [loading, setLoading] = useState(false);
@@ -9,10 +12,14 @@ const CancelButton = ({ id, onSuccess }) => {
         try {
             setLoading(true);
 
+            const token = await getAuthToken();
             const res = await fetch(
-                `http://localhost:8000/adoption-requests/${id}`,
+                `${SERVER_URL}/adoption-requests/${id}`,
                 {
                     method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
 

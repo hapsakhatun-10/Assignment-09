@@ -13,11 +13,14 @@ import {
 } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
+import { getAuthToken } from "@/lib/api";
 import Image from "next/image";
 
 import AddPetPage from "../add-pets/page";
 import MyRequestsPage from "../my-requests/page";
 import MyListingPage from "../my-listing/page";
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -38,8 +41,14 @@ export default function DashboardPage() {
             try {
                 setLoading(true);
 
+                const token = await getAuthToken();
                 const res = await fetch(
-                    `http://localhost:8000/my-listings/${userEmail}`
+                    `${SERVER_URL}/my-listings/${userEmail}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
                 );
 
                 const data = await res.json();

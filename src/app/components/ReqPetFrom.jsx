@@ -3,6 +3,9 @@
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { getAuthToken } from "@/lib/api";
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
 export default function RequestPetFrom({ pet }) {
     const router = useRouter();
@@ -63,12 +66,14 @@ export default function RequestPetFrom({ pet }) {
             createdAt: new Date(),
         };
         try {
+            const token = await getAuthToken();
             const res = await fetch(
-                "http://localhost:8000/adoption-requests",
+                `${SERVER_URL}/adoption-requests`,
                 {
                     method: "POST",
                     headers: {
                         "content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(requestData),
                 }

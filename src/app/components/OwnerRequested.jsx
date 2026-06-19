@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import ApproveButton from "./ApproveButton";
 import RejectButton from "./RejectButton";
+import { getAuthToken } from "@/lib/api";
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
 export default function OwnerRequests({ email }) {
     const [requests, setRequests] = useState([]);
@@ -10,10 +13,22 @@ export default function OwnerRequests({ email }) {
     useEffect(() => {
         if (!email) return;
 
-        fetch(`http://localhost:8000/owner-requests?email=${email}`)
-            .then((res) => res.json())
-            .then((data) => setRequests(data))
-            .catch((err) => console.log(err));
+        const fetchRequests = async () => {
+            try {
+                const token = await getAuthToken();
+                const res = await fetch(`${SERVER_URL}/owner-requests?email=${email}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await res.json();
+                setRequests(data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        fetchRequests();
     }, [email]);
 
     return (

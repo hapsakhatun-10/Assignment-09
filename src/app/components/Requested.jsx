@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import CancelButton from "./CancelBtn";
+import { getAuthToken } from "@/lib/api";
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
 export default function Requested({ email }) {
     const [requests, setRequests] = useState([]);
@@ -9,9 +12,18 @@ export default function Requested({ email }) {
     useEffect(() => {
         if (!email) return;
 
-        fetch(`http://localhost:8000/my-requests?email=${email}`)
-            .then(res => res.json())
-            .then(data => setRequests(data));
+        const fetchRequests = async () => {
+            const token = await getAuthToken();
+            const res = await fetch(`${SERVER_URL}/my-requests?email=${email}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await res.json();
+            setRequests(data);
+        };
+
+        fetchRequests();
     }, [email]);
 
     return (

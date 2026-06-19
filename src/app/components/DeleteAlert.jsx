@@ -3,6 +3,9 @@
 import { TrashBin } from "@gravity-ui/icons";
 import { AlertDialog, Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { getAuthToken } from "@/lib/api";
+
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:8000";
 
 export function DeleteAlert({ pet }) {
     const { _id, petName } = pet;
@@ -10,8 +13,12 @@ export function DeleteAlert({ pet }) {
     const router = useRouter();
 
     const handleDelete = async () => {
-        const res = await fetch(`http://localhost:8000/pets/${_id}`, {
+        const token = await getAuthToken();
+        const res = await fetch(`${SERVER_URL}/pets/${_id}`, {
             method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         });
 
         const data = await res.json();
