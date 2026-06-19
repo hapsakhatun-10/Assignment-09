@@ -1,34 +1,40 @@
+"use client";
 
-
+import { useEffect, useState } from "react";
 import PetHero from "../components/PetHero";
 import FilterSidebar from "../components/pets/FilterSidebar";
 import PetCard from "../components/pets/PetCard";
 
+export default function AllPetsPage() {
+    const [pets, setPets] = useState([]);
+    const [search, setSearch] = useState("");
+    const [species, setSpecies] = useState("");
 
-const AllPetsPage = async () => {
-    const res = await fetch('http://localhost:8000/pets')
-
-
-    const pets = await res.json();
+    useEffect(() => {
+        fetch(
+            `http://localhost:8000/pets?search=${search}&species=${species}`
+        )
+            .then((res) => res.json())
+            .then((data) => setPets(data));
+    }, [search, species]);
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Hero Section */}
+        <>
+
             <PetHero />
 
-            {/* Search & Filters */}
-            <FilterSidebar />
+            <div className="max-w-7xl mx-auto px-4 py-8">
 
-            <PetCard pets={pets} />
+                <FilterSidebar
+                    search={search}
+                    setSearch={setSearch}
+                    species={species}
+                    setSpecies={setSpecies}
+                />
 
+                <PetCard pets={pets} />
 
-
-
-
-        </div>
+            </div>
+        </>
     );
 }
-
-
-
-export default AllPetsPage;

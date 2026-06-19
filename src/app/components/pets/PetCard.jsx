@@ -2,65 +2,71 @@ import Image from "next/image";
 import Link from "next/link";
 
 const PetCard = ({ pets }) => {
-
-
-    console.log("pets:", pets);
-
-
     return (
-        <div className="max-w-7xl mx-auto px-6 pb-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="  px-6 py-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {pets?.map((pet) => (
                     <div
                         key={pet._id}
-                        className="bg-white rounded-xl overflow-hidden border shadow-sm hover:shadow-lg transition"
+                        className="group bg-white rounded-2xl overflow-hidden border border-purple-100 shadow-md hover:shadow-2xl hover:border-purple-300 transition-all duration-300"
                     >
-                        <div className="relative">
+                        {/* Image */}
+                        <div className="relative overflow-hidden">
                             {pet.image ? (
                                 <Image
                                     src={pet.image?.trim() ? pet.image : "/placeholder.png"}
                                     alt={pet.petName || "Pet"}
                                     width={600}
-                                    height={400}
-                                    className="w-full h-64 object-cover"
+                                    height={300}
+                                    className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                             ) : (
-                                <div className="w-full h-64 flex items-center justify-center bg-gray-100 text-gray-500 font-medium">
+                                <div className="w-full h-44 flex items-center justify-center bg-purple-50 text-purple-700 font-medium">
                                     No Image Available
                                 </div>
                             )}
-
                         </div>
 
+                        {/* Content */}
                         <div className="p-5">
-                            <h3 className="font-bold text-xl">
-                                {pet.petName}
-                            </h3>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h3 className="font-bold text-2xl text-gray-900">
+                                        {pet.petName}
+                                    </h3>
 
+                                    <p className="text-purple-700 font-medium mt-1">
+                                        {pet.shelterName}
+                                    </p>
+                                </div>
 
-                            <p className="text-gray-500">
-                                {pet.shelterName}
-
-                            </p>
-
-                            <div className="mt-4 flex items-center justify-between text-gray-600 text-sm">
-                                <span>
-                                    Gender: <span className="font-semibold">{pet.gender}</span>
-                                </span>
-
-                                <span>
-                                    Location: <span className="font-semibold">{pet.location}</span>
+                                <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+                                    {pet.gender}
                                 </span>
                             </div>
 
-                            <div className="mt-4 flex items-center justify-between">
-                                <span className="text-purple-700 font-bold text-xl">
-                                    ${pet.adoptionFee}
-                                </span>
+                            <div className="mt-4 flex items-center justify-between text-gray-600">
+                                <div>
+                                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                                        Location
+                                    </p>
+                                    <p className="font-medium">{pet.location}</p>
+                                </div>
 
+                                <div className="text-right">
+                                    <p className="text-xs uppercase tracking-wide text-gray-400">
+                                        Adoption Fee
+                                    </p>
+                                    <p className="text-2xl font-bold text-purple-700">
+                                        ${pet.adoptionFee}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="mt-5">
                                 <Link
                                     href={`/all-pets/${pet._id}`}
-                                    className="bg-purple-700 text-white px-4 py-2 rounded-xl inline-block"
+                                    className="w-full block text-center bg-purple-600 hover:bg-purple-800 text-white font-semibold py-3 rounded-xl transition-all duration-300"
                                 >
                                     View Details
                                 </Link>
